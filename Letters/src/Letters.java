@@ -30,8 +30,9 @@ public class Letters
 				System.out.println("File " + fileName);
 				ArrayList<double[]> pointsList = parseData(file);
 				points = pointsList.toArray(new double[0][0]);
+				sortPoints(points);
+				classifyLetter(points);
 
-				computeHomology(points);
 				System.out.println("--------------------------------------------------");
 			}
 		}
@@ -49,10 +50,44 @@ public class Letters
 		int numOfComponents = intervalIterator.hasNext() ? intervalIterator.next().getValue().size() : 0;
 		int numOfCycles = intervalIterator.hasNext() ? intervalIterator.next().getValue().size() : 0;
 
+		return new int[] { numOfComponents, numOfCycles };
+	}
+
+	private static void classifyLetter(double[][] points)
+	{
+		int[] homology = computeHomology(points);
+		int numOfComponents = homology[0];
+		int numOfCycles = homology[1];
 		System.out.println("\tNumber of connected components: " + numOfComponents);
 		System.out.println("\tNumber of cycles: " + numOfCycles);
+		// TODO DARKO
+	}
 
-		return new int[] { numOfComponents, numOfCycles };
+	private static void rotateAndSortPoints(double[][] points, double angle)
+	{
+		double cos = Math.cos(angle);
+		double sin = Math.sin(angle);
+		for (int i = 0; i < points.length; i++)
+		{
+			double x = points[i][0];
+			double y = points[i][1];
+			points[i][0] = x * cos - y * sin;
+			points[i][1] = x * sin + y * cos;
+		}
+		sortPoints(points);
+	}
+
+	private static void sortPoints(double[][] points)
+	{
+		Arrays.sort(points, (a1, a2) ->
+		{
+			int compareY = Double.compare(a1[1], a2[1]);
+			if (compareY == 0)
+			{
+				return Double.compare(a1[0], a2[0]);
+			}
+			return compareY;
+		});
 	}
 
 	private static ArrayList<double[]> parseData(File file)
