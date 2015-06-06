@@ -1,2 +1,2 @@
 # Letters
-Classification of letters
+Classification of letters using persistent homology
