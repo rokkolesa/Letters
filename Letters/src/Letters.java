@@ -59,33 +59,105 @@ public class Letters
 	private static void classifyLetter(double[][] points)
 	{
 		// število rezov
-		int cuts = 10;
-
-		for (int angle = 0; angle < 360; angle += 90)
-		{
-			getHomologies(points, cuts, angle);
-		}
+		int cuts = 5;
+		int angle = 0;
+		// for (int angle = 0; angle < 360; angle += 90)
+		// {
+		// getHomologies(points, cuts, angle);
+		// }
 
 		// TODO DARKO - klasifikacija črk glede na to, kaj dobiš iz
 		// getHomologies glede na nek kot
+
+		int[][] homologies = getHomologies(points, cuts, angle);
+		int cycles = homologies[cuts][1];
+		System.out.print("\tData represents letter: ");
+		if (cycles == 2)
+		{
+			System.out.println("B");
+			return;
+		}
+		if (cycles == 1)
+		{
+			int startingComponents = homologies[0][0];
+			if (startingComponents == 2)
+			{
+				System.out.println("A");
+			}
+			else if (startingComponents == 1)
+			{
+				System.out.println("D");
+			}
+			else
+			{
+				System.out.println("Can't recognize letter!");
+			}
+			return;
+		}
+
+		if (getContainsNComponents(homologies, 2))
+		{
+			homologies = getHomologies(points, cuts, 90);
+			boolean containsTwoComponents = getContainsNComponents(homologies, 2);
+			System.out.println(containsTwoComponents ? "K" : "H");
+			return;
+		}
+
+		homologies = getHomologies(points, cuts, 90);
+		// FIXME ta metoda poje tudi I, ker delamo preveč rezov (za I bi
+		// potrebovali samo 2 ali 1)
+		if (getContainsNComponents(homologies, 3))
+		{
+			System.out.println("E");
+			return;
+		}
+		if (getContainsNComponents(homologies, 2))
+		{
+			// C, F or G => look from the left
+			homologies = getHomologies(points, cuts, 270);
+			if (getContainsNComponents(homologies, 2))
+			{
+				System.out.println("G");
+				return;
+			}
+			homologies = getHomologies(points, cuts, 45);
+			if (getContainsNComponents(homologies, 3))
+			{
+				System.out.println("F");
+			}
+			else
+			{
+				System.out.println("C");
+			}
+			return;
+		}
+		homologies = getHomologies(points, cuts, 180);
+		if (getContainsNComponents(homologies, 2))
+		{
+			System.out.println("J");
+			return;
+		}
+		homologies = getHomologies(points, cuts, 135);
+		if (getContainsNComponents(homologies, 2))
+		{
+			System.out.println("L");
+			return;
+		}
+		else
+		{
+			System.out.println("I");
+			return;
+		}
 	}
 
+	/**
+	 * Izračunamo reze (izhod je 2D tabela, v vsaki vrstici je število komponent
+	 * in ciklov za posamezen rez)
+	 */
 	private static int[][] getHomologies(double[][] points, int cuts, int angle)
 	{
 		double[][] rotatedPoints = rotateAndSortPoints(points, angle);
-
-		// izračunamo reze (izhod je 2D tabela, v vsaki vrstici je število
-		// komponent in ciklov za posamezen rez)
-		int[][] homologies = cutAndComputeHomologies(rotatedPoints, cuts);
-		System.out.println("\tRotation: " + angle + " degrees");
-		for (int i = 0; i <= cuts; i++)
-		{
-			System.out.println("\t\tCut number: " + i);
-			System.out.println("\t\tNumber of connected components: " + homologies[i][0]);
-			System.out.println("\t\tNumber of cycles: " + homologies[i][1]);
-			System.out.println("\t\t-------------------------------------------------------");
-		}
-		return homologies;
+		return cutAndComputeHomologies(rotatedPoints, cuts);
 	}
 
 	private static int[][] cutAndComputeHomologies(double[][] points, int cuts)
@@ -231,6 +303,18 @@ public class Letters
 		});
 	}
 
+	private static boolean getContainsNComponents(int[][] homologies, int n)
+	{
+		for (int i = 0; i < homologies.length; i++)
+		{
+			if (homologies[i][0] == n)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Prints the given array of size [n][2] to (almost) Mathematica-ready
 	 * format.
@@ -243,5 +327,16 @@ public class Letters
 			System.out.println("{" + point[0] + ", " + point[1] + "},");
 		}
 		System.out.print("}");
+	}
+
+	private static void print(int[][] homologies)
+	{
+		for (int i = 0; i < homologies.length; i++)
+		{
+			System.out.println("\t\tCut number: " + i);
+			System.out.println("\t\tNumber of connected components: " + homologies[i][0]);
+			System.out.println("\t\tNumber of cycles: " + homologies[i][1]);
+			System.out.println("\t\t-------------------------------------------------------");
+		}
 	}
 }
