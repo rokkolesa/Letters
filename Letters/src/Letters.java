@@ -107,7 +107,7 @@ public class Letters
 		// FIXME ta metoda poje tudi I, ker delamo preveč rezov (za I bi
 		// potrebovali samo 2 ali 1)
 		if (getContainsNComponents(homologies, 3))
-		{
+		{	
 			System.out.println("E");
 			return;
 		}
@@ -172,6 +172,10 @@ public class Letters
 				min = point[1];
 		}
 		double step = (max - min) / (cuts + 1);
+
+		// preverimo ali je crka ozja od pricakovane napake in pogledamo celo v tem primeru
+		if (max - min < 30)
+			cuts = 0;
 
 		int[][] cutHomologies = new int[cuts + 1][2];
 
