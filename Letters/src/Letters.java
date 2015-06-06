@@ -70,7 +70,7 @@ public class Letters
 		// getHomologies glede na nek kot
 	}
 
-	private static void getHomologies(double[][] points, int cuts, int angle)
+	private static int[][] getHomologies(double[][] points, int cuts, int angle)
 	{
 		double[][] rotatedPoints = rotateAndSortPoints(points, angle);
 
@@ -85,6 +85,7 @@ public class Letters
 			System.out.println("\t\tNumber of cycles: " + homologies[i][1]);
 			System.out.println("\t\t-------------------------------------------------------");
 		}
+		return homologies;
 	}
 
 	private static int[][] cutAndComputeHomologies(double[][] points, int cuts)
