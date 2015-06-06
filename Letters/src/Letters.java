@@ -40,7 +40,11 @@ public class Letters
 
 	private static int[] computeHomology(double[][] points)
 	{
-		VietorisRipsStream<double[]> stream = Plex4.createVietorisRipsStream(points, 3, 11, 1);
+		int dimension = 3;
+		int radious = 12;
+		int divisions = 1;
+		
+		VietorisRipsStream<double[]> stream = Plex4.createVietorisRipsStream(points, dimension, radious, divisions);
 		AbstractPersistenceAlgorithm<Simplex> persistence = Plex4.getModularSimplicialAlgorithm(3, 2);
 		BarcodeCollection<Double> circleIntervals = persistence.computeIntervals(stream);
 
@@ -55,12 +59,56 @@ public class Letters
 
 	private static void classifyLetter(double[][] points)
 	{
-		int[] homology = computeHomology(points);
-		int numOfComponents = homology[0];
-		int numOfCycles = homology[1];
-		System.out.println("\tNumber of connected components: " + numOfComponents);
-		System.out.println("\tNumber of cycles: " + numOfCycles);
+		// stevilo rezov
+		int cuts = 5;
+		
+		// rotacije example
+		// rotateAndSortPoints(points, 180);
+		// rotateAndSortPoints(points, 90);
+		
+		// izrcunamo reze(izhod je 2D tabela, v vsaki vrstici je stevilo komponent in ciklov za posamezen rez)
+		int[][] homologyes = cutAndComputeHomologies(points, cuts);
+		for (int i = 0; i <= cuts; i++) {
+			System.out.println("\tCut number: " + i);
+			System.out.println("\tNumber of connected components: " + homologyes[i][0]);
+			System.out.println("\tNumber of cycles: " + homologyes[i][1]);
+			System.out.println("\t-------------------------------------------------------");
+		}
+		
+		// klasifikacija
 		// TODO DARKO
+	}
+	
+	private static int[][] cutAndComputeHomologies(double[][] points, int cuts) {		
+		double max = -Double.MAX_VALUE;
+		double min = Double.MAX_VALUE;
+		for (double[] point : points) {
+			if (point[1] > max)
+				max = point[1];
+			else
+				if (point[1] < min)
+					min = point[1];
+		}
+		
+		double step = (max - min) / (cuts + 1);
+		
+		int[][] cutHomologies = new int[cuts + 1][2];
+		
+		for (int i = 1; i <= cuts; i++) {
+			int cutNumber = 0;
+			for (int j = 0; j < points.length; j ++) {
+				if (points[j][1] < max - i * step) {
+					cutNumber = j;
+					break;
+				}
+			}
+			
+			double[][] cutPoints = Arrays.copyOfRange(points, 0, cutNumber);
+			cutHomologies[i - 1] = computeHomology(cutPoints);
+		}
+		cutHomologies[cuts] = computeHomology(points);
+		
+		return cutHomologies;
 	}
 
 	private static void rotateAndSortPoints(double[][] points, double angle)
@@ -86,7 +134,7 @@ public class Letters
 			{
 				return Double.compare(a1[0], a2[0]);
 			}
-			return compareY;
+			return -compareY;
 		});
 	}
 
