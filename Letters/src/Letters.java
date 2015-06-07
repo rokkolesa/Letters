@@ -31,7 +31,6 @@ public class Letters
 				System.out.println("File " + fileName);
 				double[][] points = parseData(file);
 				classifyLetter(points);
-
 				System.out.println("---------------------------------------------------------------");
 			}
 		}
@@ -60,16 +59,8 @@ public class Letters
 	{
 		// število rezov
 		int cuts = 5;
-		int angle = 0;
-		// for (int angle = 0; angle < 360; angle += 90)
-		// {
-		// getHomologies(points, cuts, angle);
-		// }
 
-		// TODO DARKO - klasifikacija črk glede na to, kaj dobiš iz
-		// getHomologies glede na nek kot
-
-		int[][] homologies = getHomologies(points, cuts, angle);
+		int[][] homologies = getHomologies(points, cuts, 0);
 		int cycles = homologies[cuts][1];
 		System.out.print("\tData represents letter: ");
 		if (cycles == 2)
@@ -79,18 +70,13 @@ public class Letters
 		}
 		if (cycles == 1)
 		{
-			int startingComponents = homologies[0][0];
-			if (startingComponents == 2)
+			if (getContainsNComponents(homologies, 2))
 			{
 				System.out.println("A");
 			}
-			else if (startingComponents == 1)
-			{
-				System.out.println("D");
-			}
 			else
 			{
-				System.out.println("Can't recognize letter!");
+				System.out.println("D");
 			}
 			return;
 		}
@@ -104,10 +90,8 @@ public class Letters
 		}
 
 		homologies = getHomologies(points, cuts, 90);
-		// FIXME ta metoda poje tudi I, ker delamo preveč rezov (za I bi
-		// potrebovali samo 2 ali 1)
 		if (getContainsNComponents(homologies, 3))
-		{	
+		{
 			System.out.println("E");
 			return;
 		}
@@ -141,12 +125,10 @@ public class Letters
 		if (getContainsNComponents(homologies, 2))
 		{
 			System.out.println("L");
-			return;
 		}
 		else
 		{
 			System.out.println("I");
-			return;
 		}
 	}
 
@@ -167,15 +149,22 @@ public class Letters
 		for (double[] point : points)
 		{
 			if (point[1] > max)
+			{
 				max = point[1];
+			}
 			else if (point[1] < min)
+			{
 				min = point[1];
+			}
 		}
 		double step = (max - min) / (cuts + 1);
 
-		// preverimo ali je crka ozja od pricakovane napake in pogledamo celo v tem primeru
+		// preverimo ali je crka ozja od pricakovane napake in pogledamo celo v
+		// tem primeru
 		if (max - min < 30)
+		{
 			cuts = 0;
+		}
 
 		int[][] cutHomologies = new int[cuts + 1][2];
 
@@ -323,6 +312,7 @@ public class Letters
 	 * Prints the given array of size [n][2] to (almost) Mathematica-ready
 	 * format.
 	 */
+	@SuppressWarnings("unused")
 	private static void print(double[][] points)
 	{
 		System.out.print("{");
@@ -333,6 +323,7 @@ public class Letters
 		System.out.print("}");
 	}
 
+	@SuppressWarnings("unused")
 	private static void print(int[][] homologies)
 	{
 		for (int i = 0; i < homologies.length; i++)
