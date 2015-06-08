@@ -167,7 +167,7 @@
       &
       \includegraphics[scale=0.4]{../images/RT-K-90-cuts.pdf}\\
       
-      \multicolumn{3}{c}{Fig 2: Sinking of letters A, B and K (rotated for 90 degrees)}
+      \multicolumn{3}{c}{Fig 1: Sinking of letters A, B and K (rotated for 90 degrees)}
 
   \end{tabular}
     
@@ -181,9 +181,27 @@
         \includegraphics[scale=0.6]{../images/0D_0deg.pdf}
         &
         \includegraphics[scale=0.6]{../images/1D_0deg.pdf}\\
-        \multicolumn{2}{c}{Fig 3: Betti numbers for dimensions 0 and 1, no rotation}
+        \multicolumn{2}{c}{Fig 2: Betti numbers for dimensions 0 and 1, no rotation}
   
   \end{tabular}
+  
+  \begin{tabular}{c c}
+          \includegraphics[scale=0.6]{../images/0D_45deg.pdf}
+          &
+          \includegraphics[scale=0.6]{../images/0D_90deg.pdf}\\
+          \multicolumn{2}{c}{Fig 3: Betti numbers for dimension 0, rotated for 45 and 90 degrees.}
+    
+   \end{tabular}
+   
+   \centering
+   \begin{tabular}{c}
+             \includegraphics[scale=0.9]{../images/0D_180deg.pdf}\\
+             \multicolumn{1}{c}{Fig 4: Betti numbers for dimension 0, rotated for 180 degrees.}
+       
+   \end{tabular}
+   
+    
+    
   
   
   
@@ -201,7 +219,7 @@
   \blocknode%
   {Solution}%
   {
-
+\coloredbox{colorthree!50!}{
 As seen in our goal specification, we tackled this problem of letter classification with persistent homology. 
 The main idea of our solution is looking at different parts of objects and computing their homologies. The 
 algorithm is divided into three parts:
@@ -225,23 +243,29 @@ a diagram with numbers corresponding to the number of pieces and cycles for ever
 
 \item The last thing we need to do is classify the letter. Based on some observations we made a decision tree, which ''sinks''
 the given letter in many directions and based on the observations chooses the correct paths. For example, in the first
-stage we look at the number of cycles in the letter. Based on that information we can already separate "B" from the others, as
+stage we look at the number of cycles in the letter. Based on that information we can already separate ''B'' from the others, as
 it is the only one with 2. With this information can also separate ''A'' and ''D'' from all the others. Every group of potential
 candidates can be separated with different information (we ''sink'' top to bottom, left to right, 45 degree angle, ...) until we
 are left with only one candidate in each node. This candidate corresponds to our original letter so we return it. 
 
 \end{enumerate}
-
+}
 }
 
   \blocknode{Decision tree}{
-    \begin{tikzfigure}[Letter decision tree]
-        \includegraphics[scale=0.8]{../images/DecisionTree.png}
-    \end{tikzfigure}
+    \centering
+       \begin{tabular}{c}
+                 \includegraphics[scale=0.8]{../images/DecisionTree.png}\\
+                 \multicolumn{1}{c}{Fig 5: Letter decision tree}
+           
+       \end{tabular}
   }
     
   \blocknode{Results}%
-  {With described method we were able to successfully classify input data.  
+  {
+  \coloredbox{colorthree!50!}{With described method we were able to successfully classify input data.  
+  
+  }
 
   }
   
