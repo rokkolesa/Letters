@@ -106,7 +106,7 @@
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc} % slovenski znaki
 \usepackage[slovene]{babel} % slovenski formati
-
+\usetikzlibrary{shapes,arrows}
 
 \title{Letter classification}
 \author{Rok Koleša, Domen Kren, Darko Janković\\
@@ -220,62 +220,7 @@
   %%%%%%%%%% ------------------------------------------ %%%%%%%%%%
   \blocknode{Results}%
   {With described method we were able to successfully classify input data.  
-  To make title, use the standard commands \textbackslash title and
-    \textbackslash author in the preamble, and then the following macro:
-    \begin{itemize}
-    \item[] \textbackslash titleblock\{50\}\{1.5\}
-    \end{itemize}
-    Macro \textbackslash titleblock has three parameters. The first one is
-    optional and it specifies the shift of the title block w.r.t.\ its default
-    position, which is set to (\$0.5*(0,\textbackslash
-    paperheight)-(0,\textbackslash margin)\$). The second parameter is the width
-    of the title block, and the third parameter is the scaling ratio (to make
-    the title bigger or smaller).\\
 
-    \small
-    The syntax for specifying authors is similar to the one in aaai.sty.  Author
-    information can be set in various styles: For several authors from the same
-    institution:
-    \begin{itemize}\item[] 
-      \textbackslash author\{Author 1 \textbackslash and ... \textbackslash and
-      Author n \textbackslash\textbackslash\\ 
-      Address line \textbackslash\textbackslash \
-      ... \textbackslash\textbackslash \ Address line\}
-    \end{itemize}
-
-    If the names do not fit well on one line use
-    \begin{itemize}\item[] 
-      \textbackslash author\{Author 1 \textbackslash\textbackslash \
-      \{\textbackslash bf Author 2\} \textbackslash\textbackslash \
-      ... \textbackslash\textbackslash \
-      \{\textbackslash bf Author n\} \textbackslash\textbackslash\\
-      Address line \textbackslash\textbackslash \
-      ... \textbackslash\textbackslash \ Address line\}
-    \end{itemize}
-
-    For authors from different institutions: 
-    \begin{itemize}\item[] 
-      \textbackslash author\{Author 1 \textbackslash\textbackslash \ Address
-      line \textbackslash\textbackslash \ ... \textbackslash\textbackslash \
-      Address line \\ \textbackslash And ... \textbackslash And \\
-      Author n \textbackslash\textbackslash \ Address line
-      \textbackslash\textbackslash \ ... \textbackslash\textbackslash \ Address
-      line\}
-    \end{itemize}
-    
-    To start a separate ``row'' of authors use \textbackslash AND, as in
-    \begin{itemize}\item[] 
-      \textbackslash author\{Author 1 \textbackslash\textbackslash \ Address line
-      \textbackslash\textbackslash \ ... \textbackslash\textbackslash \ Address
-      line \textbackslash AND\\ Author 2 \textbackslash\textbackslash \ Address line
-      \textbackslash\textbackslash \ ... \textbackslash\textbackslash \ Address
-      line \textbackslash And\\ Author 3 \textbackslash\textbackslash \ Address line
-      \textbackslash\textbackslash \ ... \textbackslash\textbackslash \ Address
-      line\}
-    \end{itemize}
-    (though, I must say \textbackslash and ... \textbackslash and did not work for
-    me with more than 2 authors, so just use commas where you need if it does
-    not work for you either).
   }
   
 
@@ -332,22 +277,43 @@
   \blocknode%
   {Solution}%
   {
+Solution
+
+As seen in our goal specification, we tackled this problem of letter classification with persistent homology. 
+The main idea of our solution is looking at different parts of objects and computing their homologies. The 
+algorithm is divided into three parts:
+
+1.) First, let us parse the input. All we need is a set of points that are part of the object we want to classify. The
+only problem that can arise, comes from the distribution of the points. If they are all in one place or to scarce, we
+will not be able to get good results. We want an even distribution with lots of points.
+
+2.) We slowly "sink" our letter. After sorting our input points we cut the letter by layers. After that we compute 
+homologies for each of those. 
+
+For the computations, we use the VietorisRips filter and check the intervals of our 
+simplexes. In this case, we take the infinite ones. With that we can get the number of pieces and cycles in our complex.
+We have to be a little careful with how we chose the maximum radius value, for the VietorisRips algorithm. With some
+trial and error we decided on 10% of the full object size. With that we remove most of errors. 
+
+Now let us return to the "sinking". For example, lets break letter "A" into 6 pieces. First, we take the lowest piece and 
+get its 0. and 1. dimension homologies. The next step is the lowest two pieces, then three, ... What we get in the end is 
+a diagram with numbers corresponding to the number of pieces and cycles for every part of the letter.
+
+3.) The last thing we need to do is classify the letter. Based on some observations we made a decision tree, which "sinks"
+the given letter in many directions and based on the observations chooses the correct paths. For example, in the first
+stage we look at the number of cycles in the letter. Based on that information we can already separate "B" from the others, as
+it is the only one with 2. With this information can also separate "A" and "D" from all the others. Every group of potential
+candidates can be separated with different information(we "sink" top to bottom, left to right, 45degres angle, ...) until we
+are left with only one candidate in each node. This candidate corresponds to our original letter so we return it. 
+
   
-  To start the second column or the third column use commands
-    \begin{itemize}
-    \item[] \textbackslash startsecondcolumn, and \textbackslash startthirdcolumn.
-    \end{itemize}
-    If the number of columns is 2, then the last command will not have
-    effect. \\
-
-    You can also start a new column with an arbitrary x-coordinate by specifying
-    explicitly the coordinate of the new block node as follows:
-    \begin{itemize}
-    \item[] \textbackslash blocknode[(\$(firstrow)-(yshift)+(x,0)\$)]\{Block
-      Title\}\{Block Content\}
-    \end{itemize}
-
-    % 
+    \begin{tikzfigure}[A shaded circle]
+     \begin{tikzpicture}
+        \includegraphics[scale=1]{../images/DecisionTree.png}
+      \end{tikzpicture}
+    \end{tikzfigure}
+    
+    
   }
 
 
@@ -393,6 +359,7 @@
         \draw[draw=none,inner color=colorthree, outer color=colorone] (0,0) circle (2cm);
       \end{tikzpicture}
     \end{tikzfigure}
+    
   }
 
 
@@ -416,6 +383,7 @@
   %% \getcurrentrow{note}, where note is the alias of the callout node, and
   %% then specify the coordinate of the next node using coordinate (currentrow)
   \getcurrentrow{note}
+
 
 
   %% a plain block
