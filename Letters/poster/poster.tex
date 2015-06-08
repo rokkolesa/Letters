@@ -173,12 +173,23 @@
     
   
   }
-%%%%%%%%%% ------------------------------------------ %%%%%%%%%%
-  \blocknode{Results}%
-  {With described method we were able to successfully classify input data.  
-
-  }
   
+  \blocknode{Betti numbers by cuts}
+  {
+  \setlength{\tabcolsep}{0pt}
+  \begin{tabular}{c c}
+        \includegraphics[scale=0.6]{../images/0D_0deg.pdf}
+        &
+        \includegraphics[scale=0.6]{../images/1D_0deg.pdf}\\
+        \multicolumn{2}{c}{Fig 3: Betti numbers for dimensions 0 and 1, no rotation}
+  
+  \end{tabular}
+  
+  
+  
+  }
+%%%%%%%%%% ------------------------------------------ %%%%%%%%%%
+
   
   
 
@@ -216,7 +227,7 @@ a diagram with numbers corresponding to the number of pieces and cycles for ever
 the given letter in many directions and based on the observations chooses the correct paths. For example, in the first
 stage we look at the number of cycles in the letter. Based on that information we can already separate "B" from the others, as
 it is the only one with 2. With this information can also separate ''A'' and ''D'' from all the others. Every group of potential
-candidates can be separated with different information(we ''sink'' top to bottom, left to right, 45\° angle, ...) until we
+candidates can be separated with different information (we ''sink'' top to bottom, left to right, 45 degree angle, ...) until we
 are left with only one candidate in each node. This candidate corresponds to our original letter so we return it. 
 
 \end{enumerate}
@@ -225,11 +236,15 @@ are left with only one candidate in each node. This candidate corresponds to our
 
   \blocknode{Decision tree}{
     \begin{tikzfigure}[Letter decision tree]
-        \includegraphics[scale=1]{../images/DecisionTree.png}
+        \includegraphics[scale=0.8]{../images/DecisionTree.png}
     \end{tikzfigure}
   }
     
+  \blocknode{Results}%
+  {With described method we were able to successfully classify input data.  
 
+  }
+  
 
 
 
