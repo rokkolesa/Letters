@@ -190,34 +190,37 @@
   \blocknode%
   {Solution}%
   {
-Solution
 
 As seen in our goal specification, we tackled this problem of letter classification with persistent homology. 
 The main idea of our solution is looking at different parts of objects and computing their homologies. The 
 algorithm is divided into three parts:
 
-1.) First, let us parse the input. All we need is a set of points that are part of the object we want to classify. The
+\begin{enumerate}
+\item First, let us parse the input. All we need is a set of points that are part of the object we want to classify. The
 only problem that can arise, comes from the distribution of the points. If they are all in one place or to scarce, we
 will not be able to get good results. We want an even distribution with lots of points.
 
-2.) We slowly "sink" our letter. After sorting our input points we cut the letter by layers. After that we compute 
+\item We slowly ''sink'' our letter. After sorting our input points we cut the letter by layers. After that we compute 
 homologies for each of those. 
 
 For the computations, we use the VietorisRips filter and check the intervals of our 
 simplexes. In this case, we take the infinite ones. With that we can get the number of pieces and cycles in our complex.
 We have to be a little careful with how we chose the maximum radius value, for the VietorisRips algorithm. With some
-trial and error we decided on 10% of the full object size. With that we remove most of errors. 
+trial and error we decided on 10\% of the full object size. With that we remove most of errors. 
 
-Now let us return to the "sinking". For example, lets break letter "A" into 6 pieces. First, we take the lowest piece and 
+Now let us return to the ''sinking''. For example, lets break letter ''A'' into 6 pieces. First, we take the lowest piece and 
 get its 0. and 1. dimension homologies. The next step is the lowest two pieces, then three, ... What we get in the end is 
 a diagram with numbers corresponding to the number of pieces and cycles for every part of the letter.
 
-3.) The last thing we need to do is classify the letter. Based on some observations we made a decision tree, which "sinks"
+\item The last thing we need to do is classify the letter. Based on some observations we made a decision tree, which ''sinks''
 the given letter in many directions and based on the observations chooses the correct paths. For example, in the first
 stage we look at the number of cycles in the letter. Based on that information we can already separate "B" from the others, as
-it is the only one with 2. With this information can also separate "A" and "D" from all the others. Every group of potential
-candidates can be separated with different information(we "sink" top to bottom, left to right, 45degres angle, ...) until we
+it is the only one with 2. With this information can also separate ''A'' and ''D'' from all the others. Every group of potential
+candidates can be separated with different information(we ''sink'' top to bottom, left to right, 45\° angle, ...) until we
 are left with only one candidate in each node. This candidate corresponds to our original letter so we return it. 
+
+\end{enumerate}
+
 }
 
   \blocknode{Decision tree}{
