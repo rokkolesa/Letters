@@ -156,17 +156,29 @@
   }
   
  
-  %%%%%%%%%% ------------------------------------------ %%%%%%%%%%
+  
+  \blocknode{Sinking example}
+  {
+  \setlength{\tabcolsep}{40pt}
+  \begin{tabular}{c c c}
+      \includegraphics[scale=0.4]{../images/RT-A-cuts.pdf}
+      &
+      \includegraphics[scale=0.4]{../images/RT-B-cuts.pdf}
+      &
+      \includegraphics[scale=0.4]{../images/RT-K-90-cuts.pdf}\\
+      
+      \multicolumn{3}{c}{Fig 2: Sinking of letters A, B and K (rotated for 90 degrees)}
+
+  \end{tabular}
+    
+  
+  }
+%%%%%%%%%% ------------------------------------------ %%%%%%%%%%
   \blocknode{Results}%
   {With described method we were able to successfully classify input data.  
 
   }
   
-  \blocknode{Sinking example}
-  {
- 
-  }
-
   
   
 
@@ -209,7 +221,7 @@ are left with only one candidate in each node. This candidate corresponds to our
 }
 
   \blocknode{Decision tree}{
-    \begin{tikzfigure}[A shaded circle]
+    \begin{tikzfigure}[Letter decision tree]
         \includegraphics[scale=1]{../images/DecisionTree.png}
     \end{tikzfigure}
   }
