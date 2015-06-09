@@ -27,7 +27,6 @@
 \usepackage{natbib} % Required to change bibliography style to APA
 \usepackage{amsmath} % Required for some math elements 
 \usepackage[utf8]{inputenc} % slovenski znaki
-\usepackage[slovene]{babel} % slovenski formati
 \usepackage[]{algorithm2e}
 \usepackage{hyperref}
 \setlength\parindent{0pt} % Removes all indentation from paragraphs
@@ -51,9 +50,7 @@
 \maketitle % Insert the title, author and date
 
 \begin{center}
-\begin{tabular}{l r}
-Mentor: & prof. dr. Neža Mramor Kosta % Instructor/supervisor
-\end{tabular}
+Mentor: prof. dr. Neža Mramor Kosta % Instructor/supervisor
 \end{center}
 
 % If you wish to include an abstract, uncomment the lines below
@@ -99,12 +96,46 @@ and the ending point of the edge. Each point is given by a pair of coordinates.
 %----------------------------------------------------------------------------------------
 
 \section{Solution}
+As seen in our goal specification, we tackled this problem of letter classification with persistent homology. 
+The main idea of our solution is looking at different parts of objects and computing their homologies. The 
+algorithm is divided into three parts:
+
+\begin{enumerate}
+\item First, let us parse the input. All we need is a set of points that are part of the object we want to classify. The
+only problem that can arise, comes from the distribution of the points. If they are all in one place or to sparse, we
+will not be able to get good results. We want an even distribution with lots of points.
+
+\item We slowly ''sink'' our letter. After sorting our input points we cut the letter by layers. After that we compute 
+homologies for each of those. 
+
+For the computations, we compute the Vietoris-Rips complex and intervals and check infinite ones. With that we can get the number of components and cycles in our complex.
+We have to be a little careful with how we choose the maximum radius value, for the Vietoris-Rips algorithm. With some
+trial and error we decided on 10\% of the full object size. With that we remove most of errors. 
+
+Now let us return to the ''sinking''. For example, lets break letter ''A'' into 6 pieces. First, we take the lowest piece and 
+get its zero and first dimension homologies. The next step is the lowest two pieces, then three etc. What we get in the end is a diagram with numbers corresponding to the number of components and cycles for every part of the letter.
+
+\item The last thing we need to do is classify the letter. Based on some observations we made a decision tree, which ''sinks'' the given letter in many directions and based on the observations chooses the correct path. For example, in the first stage we look at the number of cycles in the letter. Based on that information we can already separate ''B'' from the others, as it is the only one with 2. With this information can also separate ''A'' and ''D'' from all the others. Every group of potential candidates can be separated with different information (we ''sink'' top to bottom, left to right, 45 degree angle, ...) until we are left with only one candidate in each node. This candidate corresponds to our original letter so we return it. 
+
+\end{enumerate}
+
+\setlength{\tabcolsep}{7pt}
+\begin{tabular}{c c c}
+	\includegraphics[scale=0.2]{../images/RT-A-cuts.pdf}
+	&
+	\includegraphics[scale=0.2]{../images/RT-B-cuts.pdf}
+	&
+	\includegraphics[scale=0.2]{../images/RT-K-90-cuts.pdf}\\
+      
+	\multicolumn{3}{c}{Fig 1: Sinking of letters A, B and K (rotated for 90 degrees)}
+\end{tabular}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 4
 %----------------------------------------------------------------------------------------
 
 \section{Results}
+We were able to classify all 12 letters using only their topological properties. We used a solution that does not even need first dimension simplices from the input. We only need points (0-dimension simplices). We were successful in solving the main problem.
 
 
 %----------------------------------------------------------------------------------------
@@ -112,7 +143,13 @@ and the ending point of the edge. Each point is given by a pair of coordinates.
 %----------------------------------------------------------------------------------------
 
 \section{Conclusion}
+\begin{itemize}
+\item The biggest problem we had was to classify the letter I. The object itself is really simple but when you try to compute homology from the side, everything detected is treated as an error. Many solutions are possible, we just checked if the letter width is lower than our error margin and computed its homology as a whole.
 
+\item The project is easily extendible to the whole alphabet. Lower case letters or special characters can easily be added. The main problem with this approach is that we need a ''pretty'' input. When the letters are ie. too close together, curved or one over the other, these topological data are not so helpful.
+
+\item For creating Vietoris-Rips complexes and computing betti numbers we used a library for topological computations called \textit{javaplex}.
+\end{itemize}
 
 
 \end{document}
