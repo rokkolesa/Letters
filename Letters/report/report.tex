@@ -141,13 +141,14 @@ We were able to classify all 12 letters using only their topological properties.
 %----------------------------------------------------------------------------------------
 
 \section{Conclusion}
-\begin{itemize}
-\item The biggest problem we had was to classify the letter I. The object itself is really simple but when you try to compute homology from the side, everything detected is treated as an error. Many solutions are possible, we just checked if the letter width is lower than our error margin and computed its homology as a whole.
+The biggest problem we had was to classify the letter I. The object itself is really simple but when you try to compute homology from the side, everything detected is treated as an error. Many solutions are possible, we just checked if the letter width is lower than our error margin and computed its homology as a whole.
 
-\item The project is easily extendible to the whole alphabet. Lower case letters or special characters can easily be added. The main problem with this approach is that we need a ''pretty'' input. When the letters are ie. too close together, curved or one over the other, these topological data are not so helpful.
+The project is easily extendible to the whole alphabet. Lower case letters or special characters can easily be added. The main problem with this approach is that we need a ''pretty'' input. When the letters are ie. too close together, curved or one over the other, these topological data are not so helpful.
 
-\item For creating Vietoris-Rips complexes and computing betti numbers we used a library for topological computations called \textit{javaplex}.
-\end{itemize}
+For creating Vietoris-Rips complexes and computing betti numbers we used a library for topological computations called \textit{javaplex}.
+
+All the code, written in Java 8, is accessible on GitHub:\\
+\url{https://github.com/rokkolesa/Letters}
 
 
 \end{document}
